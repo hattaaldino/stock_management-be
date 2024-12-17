@@ -45,7 +45,6 @@ func AddStockEntry(c *gin.Context) {
 
 	_, err = controllers.AddStockEntry(config.DB, newEntry.Type, newEntry.EntryDetails)
 	if err != nil {
-		fmt.Println(err.Error())
 		panic("add stock entry failed")
 	}
 

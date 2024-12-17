@@ -48,15 +48,16 @@ func AddStockEntry(db *gorm.DB, entryType string, details []models.EntryDetail) 
 			if err := db.Exec("INSERT INTO batch (id, item_code, expiry_date) VALUES (?, ?, ?)", batch.ID, batch.ItemCode, batch.ExpiryDate).Error; err != nil {
 				return nil, err
 			}
+
 			detail.BatchID = batchID
 		} else {
 			var lastMatchedBatch models.Batch
 			if err := db.Raw("SELECT id, item_code, expiry_date FROM batch WHERE item_code = ? AND expiry_date = ?", detail.ItemCode, detail.ExpiryDate).Scan(&lastMatchedBatch).Error; err != nil && err != gorm.ErrRecordNotFound {
 				return nil,
 					err
-			} else if err == nil {
-				detail.BatchID = lastMatchedBatch.ID
 			}
+
+			detail.BatchID = lastMatchedBatch.ID
 		}
 
 		// Generate EntryDetail ID
